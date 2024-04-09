@@ -1,0 +1,10 @@
+version: "3.7"
+services:
+    app:
+        image: "registry.gitlab.com/istts/beasiswa2024/frontend"
+        ports:
+            - "127.0.0.1:8163:3000"
+        volumes:
+            - .:/mnt/wwwroot30/beasiswa2024/frontend
+        restart: unless-stopped
+        hostname: beasiswa2024.istts.ac.id

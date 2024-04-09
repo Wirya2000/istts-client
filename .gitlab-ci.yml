@@ -1,0 +1,16 @@
+build-image:
+    image: docker:latest
+    stage: build
+    services:
+        - docker:dind
+    before_script:
+        - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    script:
+        - docker build --pull --build-arg REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL} --build-arg GENERATE_SOURCEMAP=false
+          -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+          -t "$CI_REGISTRY_IMAGE:latest"
+          .
+        - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+        - docker push "$CI_REGISTRY_IMAGE:latest"
+    only:
+        - main
