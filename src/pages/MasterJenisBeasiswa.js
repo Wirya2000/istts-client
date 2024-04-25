@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 import { faker } from '@faker-js/faker';
 import { Link, useNavigate } from 'react-router-dom';
+import { Column } from 'primereact/column';
 // @mui
 import { Stack, Button, Typography, Container, Icon, Alert, AlertTitle } from '@mui/material';
 import { useTheme, alpha } from '@mui/material/styles';
@@ -55,6 +56,7 @@ import { visuallyHidden } from '@mui/utils';
 // import Iconify from '../components/iconify';
 
 // import tokenValidator from '../utils/tokenValidator';
+import { DataTable } from 'primereact/datatable';
 
 
 function descendingComparator(a, b, orderBy) {
@@ -343,6 +345,7 @@ export default function MasterJenisBeasiswa({kodeJenis}) {
     const [page, setPage] = React.useState(0);
     const [rows, setRows] = useState(beajenis);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [loading, setLoading] = useState(true); // Define loading 
 
     const [delindex, setDelindex] = React.useState();
     // const kodeJenis="";
@@ -562,245 +565,33 @@ export default function MasterJenisBeasiswa({kodeJenis}) {
         
         {/* <Stack direction="row" flexWrap="wrap-reverse" alignItems="center" justifyContent="flex-end" sx={{ mb: 5 }}>
           <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}> */}
-          <TableContainer component={Paper}>
-              {/* <SearchBar
-                value={searched}
-                onChange={(searchVal) => requestSearch(searchVal)}
-                onCancelSearch={() => cancelSearch()}
-              /> */}
-                {/* <Button></Button> */}
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                  <EnhancedTableHead
-                    numSelected={selected.length}
-                    order={order}
-                    orderBy={orderBy}
-                    onSelectAllClick={handleSelectAllClick}
-                    onRequestSort={handleRequestSort}
-                    rowCount={beajenis.length}
-                    headLabel={[
-                    {
-                      id: 'kodejenis',
-                      // numeric: false,
-                      // disablePadding: true,
-                      label: 'Kode Beasiswa',
-                    },
-                    {
-                      id: 'namajenis',
-                      // numeric: true,
-                      // disablePadding: false,
-                      label: 'Nama Beasiswa',
-                    },
-                    {
-                      id: 'jumsppjenis',
-                      // numeric: true,
-                      // disablePadding: false,
-                      label: 'Jumlah SPP',
-                    },
-                    {
-                      id: 'jumsksjenis',
-                      // numeric: true,
-                      // disablePadding: false,
-                      label: 'Jumlah SKS',
-                    },
-                    {
-                      id: 'tipejenis',
-                      // numeric: true,
-                      // disablePadding: false,
-                      label: 'Tipe',
-                    },
-                    {
-                      id: 'action',
-                      // numeric: true,
-                      // disablePadding: false,
-                      label: 'Actions',
-                    },
-                    ]}
-                  />
-                    <TableBody>
-                    {/* <Link to={`/master/jenis-beasiswa/${beajenis.bea_jenis_kode}`}> */}
-                    {(rowsPerPage > 0
-                    ? beajenis.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    : beajenis
-                    ).map((beajenis,i) => {
-                      const isItemSelected = isSelected(beajenis.bea_jenis_kode);
-                      const labelId = `enhanced-table-checkbox-${i}`;
-                      return (
-                        <TableRow
-                        hover
-                        onClick={(event) => handleClick(event, beajenis.bea_jenis_kode)}
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={beajenis.bea_jenis_kode}
-                        selected={isItemSelected}
-                        // sx={{ cursor: 'pointer' }}
-                        sx={{ cursor: 'pointer', '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                            {/* <TableCell component="th" scope="row">
-                                {i+1}
-                            </TableCell> */}
-                            {/* <TableCell padding="checkbox">
-                              <Checkbox
-                                color="primary"
-                                checked={isItemSelected}
-                                inputProps={{
-                                  'aria-labelledby': labelId,
-                                }}
-                              />
-                            </TableCell> */}
-                            <TableCell
-                              component="th"
-                              id={labelId}
-                              scope="row"
-                              // padding="none"
-                              align='center'
-                              width={'10%'}
-                            >
-                              {beajenis.bea_jenis_kode}
-                            </TableCell>
-                            {/* <TableCell align="left" name="kodeJenis">{beajenis.bea_jenis_kode}</TableCell> */}
-                            <TableCell align='left'>{beajenis.bea_jenis_nama}</TableCell>
-                            <TableCell align="right">{beajenis.bea_jenis_jumlah_spp}</TableCell>
-                            <TableCell align="right">{beajenis.bea_jenis_jumlah_sks}</TableCell>
-                            <TableCell align="center">
-                            {(() => {
-                            if (beajenis.bea_jenis_tipe === 1) {
-                                return "PUBLIC/UMUM";
-                            } 
-                            if (beajenis.bea_jenis_tipe === 2) {
-                                return "PRIVATE";
-                            } 
-                            return "";
-                            })()}
-                            </TableCell>
-                            <TableCell align="center" width={"10%"}>
-                            {/* <Button variant="contained" startIcon={<UpdateIcon/>} onClick={handleClick}>
-                                Update
-                            </Button> */}
-                            {(() => {
-                            if (userData.role === "admin"){
-                              if (beajenis.bea_jenis_role === 1) {
-                                return (
-                                    <>
-                                    <Link to={`/master/jenis-beasiswa/${beajenis.bea_jenis_kode}`}>
-                                    <IconButton aria-label="update" color="secondary"
-                                    // onClick={() => handleUpdateClick(kodeJenis)}
-                                    > 
-                                        <ModeEditIcon />
-                                    </IconButton>
-                                    </Link>
-                                    <IconButton aria-label="delete" sx={{ color: "red" }}
-                                    onClick={() => {handleClickOpen(beajenis.bea_jenis_kode); console.log(beajenis.bea_jenis_kode)}}
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
-                                    {/* {beajenis.bea_jenis_kode} */}
-                                    </>
-                                )
-                              } 
-                              if (beajenis.bea_jenis_role === 2) {
-                                  return "";
-                              } 
-                              return "";
-                            }
-                            if(userData.role === "pmb"){
-                              if (beajenis.bea_jenis_role === 2) {
-                                return (
-                                    <>
-                                    <Link to={`/master/jenis-beasiswa/${beajenis.bea_jenis_kode}`}>
-                                    <IconButton aria-label="update" color="secondary"
-                                    // onClick={() => handleUpdateClick(kodeJenis)}
-                                    > 
-                                        <ModeEditIcon />
-                                    </IconButton>
-                                    </Link>
-                                    <IconButton aria-label="delete" sx={{ color: "red" }}
-                                    onClick={() => {handleClickOpen(beajenis.bea_jenis_kode); console.log(beajenis.bea_jenis_kode)}}
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
-                                    {/* {beajenis.bea_jenis_kode} */}
-                                    </>
-                                )
-                              } 
-                              if (beajenis.bea_jenis_role === 1) {
-                                  return "";
-                              } 
-                              return "";
-                            }
-                            return "";
-                            
-                            })()}
-
-                            {/* <Link to={`/master/jenis-beasiswa/${beajenis.bea_jenis_kode}`}>
-                            <IconButton aria-label="update" color="secondary"
-                            // onClick={() => handleUpdateClick(kodeJenis)}
-                            > 
-                                <ModeEditIcon />
-                            </IconButton>
-                            </Link>
-                            <IconButton aria-label="delete" sx={{ color: "red" }}
-                            onClick={() => handleClickOpen()}
-                            >
-                                <DeleteIcon />
-                            </IconButton>
-                            <Dialog
-                              open={open}
-                              onClose={handleClose}
-                              aria-labelledby="alert-dialog-title"
-                              aria-describedby="alert-dialog-description"
-                            >
-                              <DialogTitle id="alert-dialog-title">
-                                {"Are you sure to delete this item?"}
-                              </DialogTitle>
-                              <DialogContent>
-                                <DialogContentText id="alert-dialog-description">
-                                  If this item was deleted, you can't resolve again
-                                </DialogContentText>
-                              </DialogContent>
-                              <DialogActions>
-                                <Button onClick={handleClose}>Disagree</Button>
-                                <Button onClick={() => handleDeleteClick(`${beajenis.bea_jenis_kode}`)} autoFocus>
-                                  {/* alert(i); 
-                                  Agree
-                                </Button>
-                              </DialogActions>
-                            </Dialog> */}
-                            </TableCell>
-                        </TableRow>
-
-                          )})}
-                          
-                    {/* </Link> */}
-                    {emptyRows > 0 && (
-                        <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
-                        </TableRow>
-                    )}
-                    </TableBody>
-                    <TableFooter>
-                        <TableRow>
-                            <TablePagination
-                            rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                            colSpan={12}
-                            count={beajenis.length}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            align='left'
-                            SelectProps={{
-                                inputProps: {
-                                'aria-label': 'rows per page',
-                                },
-                                native: true,
-                            }}
-                            onPageChange={handleChangePage}
-                            onRowsPerPageChange={handleChangeRowsPerPage}
-                            ActionsComponent={TablePaginationActions}
-                            />
-                        </TableRow>
-                    </TableFooter>
-                </Table>
-            </TableContainer>
+          {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <DataTable value={beajenis} paginator rows={10} rowsPerPageOptions={[5, 10, 20]} globalFilterFields={['keu_bea_jeni.bea_jenis_nama', 'aka_periode.periode_nama', 'beasiswa_stop', 'aka_periode.periode_akademik', 'beasiswa_start', 'beasiswa_sk']} filterDisplay="row" emptyMessage="No data found." >
+          <Column field="keu_bea_jeni.bea_jenis_nama" sortable header="User ID" filter />
+          <Column
+            field="periode"
+            header="Period Name & Academic Period"
+            // body={concatPeriod}
+            sortable
+            sortField="aka_periode.periode_nama" // Specify the sortField to enable sorting
+            sortableCustom
+            filter
+          />
+          <Column
+            field="beasiswa_start"
+            header="Start & End Dates"
+            // body={concatDates}
+            sortable
+            sortField="beasiswa_start" // Specify the sortField to enable sorting
+            sortableCustom
+            filter
+          />
+          <Column field="beasiswa_sk" sortable header="Email" filter />
+          {/* Add more columns as needed */}
+        </DataTable>
+      )}
             <Dialog
               open={open}
               onClose={handleClose}

@@ -1,79 +1,50 @@
-import PropTypes from 'prop-types';
-// @mui
-import { styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
-// utils
-import { bgBlur } from '../../../utils/cssStyles';
-// components
-import Iconify from '../../../components/iconify';
-//
-// import Searchbar from './Searchbar';
-// import AccountPopover from './AccountPopover';
-// import LanguagePopover from './LanguagePopover';
-// import NotificationsPopover from './NotificationsPopover';
+import React from 'react';
+import { Box, Typography, Link } from '@mui/material';
 
-// ----------------------------------------------------------------------
-
-const NAV_WIDTH = 280;
-
-const FOOTER_MOBILE = 64;
-
-const FOOTER_DESKTOP = 92;
-
-const StyledRoot = styled(AppBar)(({ theme }) => ({
-  ...bgBlur({ color: theme.palette.background.default }),
-  boxShadow: 'none',
-  [theme.breakpoints.up('lg')]: {
-    width: `calc(100% - ${NAV_WIDTH + 1}px)`,
-  },
-}));
-
-const StyledToolbar = styled(Toolbar)(({ theme }) => ({
-  minHeight: FOOTER_MOBILE,
-  [theme.breakpoints.up('lg')]: {
-    minHeight: FOOTER_DESKTOP,
-    padding: theme.spacing(0, 5),
-  },
-}));
-
-// ----------------------------------------------------------------------
-
-Footer.propTypes = {
-  onOpenNav: PropTypes.func,
+const Footer = () => {
+  return (
+    <Box
+      component="footer"
+      sx={{
+        backgroundColor: '#f8f9fa',
+        paddingTop: '20px',
+        textAlign: 'center',
+        position: 'relative',
+        bottom: 0,
+        width: '100%',
+      }}
+    >
+      <Typography variant="body1" color="textSecondary">
+        Jika ada ketidakcocokan data akademik, silahkan menghubungi kantor BAA (U-203).
+        Jika ada ketidakcocokan data keuangan, silahkan menghubungi kantor BAA (E-103).
+        Jika ada block perwalian karena PMB, silahkan menghubungi kantor PMB (gedung E).
+        Jika ada gangguan situs, silahkan menghubungi kantor PMB (E-501).
+        Jika anda memiliki saran dan kritik, silahkan menghubungi Staff IT (E-501).
+      </Typography>
+      <Typography variant="body1" color="textSecondary">
+        Jalan Ngagel Jaya Tengah 73 - 77
+        Surabaya, Indonesia
+        Tel. +62 31 502 7920
+        Fax. +62 31 504 1509, +62 31 503 1818
+      </Typography>
+      <Typography variant="body2" color="textSecondary">
+        Hotline Biro Administrasi Umum (BAU) : WA (0895 10100 888)
+        Hotline Biro Administrasi Akademik (BAA) : WA (0878 9090 8955)
+        Hotline Biro Administrasi Kemahasiswaan (BAK) : WA (081 333 555 070)
+        Hotline Penerimaan Mahasiswa Baru (PMB) : Telepon (031 503 1818) / WA (0812 3353 3888)
+        <Link color="inherit" href="#">
+          Privacy Policy
+        </Link>{' '}
+        |{' '}
+        <Link color="inherit" href="#">
+          Terms & Conditions
+        </Link>
+      </Typography>
+      <Typography variant="body2" color="textSecondary">
+        {new Date().getFullYear()} &copy; Sistem Informasi Mahasiswa iSTTS
+      </Typography>
+    </Box>
+  );
 };
 
-export default function Footer({ onOpenNav }) {
-  return (
-    <StyledRoot>
-      <StyledToolbar>
-        <IconButton
-          onClick={onOpenNav}
-          sx={{
-            mr: 1,
-            color: 'text.primary',
-            display: { lg: 'none' },
-          }}
-        >
-          <Iconify icon="eva:menu-2-fill" />
-        </IconButton>
-
-        {/* <Searchbar /> */}
-        <Box sx={{ flexGrow: 1 }} />
-
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={{
-            xs: 0.5,
-            sm: 1,
-          }}
-        >
-            {/* Test */}
-          {/* <LanguagePopover />
-          <NotificationsPopover /> */}
-          {/* <AccountPopover /> */}
-        </Stack>
-      </StyledToolbar>
-    </StyledRoot>
-  );
-}
+export default Footer;

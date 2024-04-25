@@ -56,6 +56,9 @@ import { visuallyHidden } from '@mui/utils';
 
 // import tokenValidator from '../utils/tokenValidator';
 
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+
 const moment = require('moment-timezone');
 
 function descendingComparator(a, b, orderBy) {
@@ -348,6 +351,7 @@ export default function MasterWawancaraMhs({idWawancara}) {
     const [page, setPage] = React.useState(0);
     const [rows, setRows] = useState(beawawancara);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [loading, setLoading] = useState(true);
     // const kodeJenis="";
     // const beaJenisKode="";
 
@@ -414,6 +418,7 @@ export default function MasterWawancaraMhs({idWawancara}) {
       })
       .then(response =>{
           setBeaWawancara(response.data);
+          setLoading(false);
           console.log("Success fetch data!");
       })
       .catch(error => {
@@ -439,6 +444,7 @@ export default function MasterWawancaraMhs({idWawancara}) {
       getBeaWawancara();
       
     },[]);
+    console.log("sini");
     console.log(beawawancara);
     console.log(beawawancara.bea_apply_wawancara);
 
@@ -512,6 +518,7 @@ export default function MasterWawancaraMhs({idWawancara}) {
       //     console.log("Success insert data!");
       navigate("/master/wawancara");
   };
+
      
     
 
@@ -533,158 +540,27 @@ export default function MasterWawancaraMhs({idWawancara}) {
                 Tambah
             </Button> */}
         </Container>
-        
-        {/* <Stack direction="row" flexWrap="wrap-reverse" alignItems="center" justifyContent="flex-end" sx={{ mb: 5 }}>
-          <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}> */}
-          <TableContainer component={Paper}>
-              {/* <SearchBar
-                value={searched}
-                onChange={(searchVal) => requestSearch(searchVal)}
-                onCancelSearch={() => cancelSearch()}
-              /> */}
-                {/* <Button></Button> */}
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                  <EnhancedTableHead
-                    numSelected={selected.length}
-                    order={order}
-                    orderBy={orderBy}
-                    onSelectAllClick={handleSelectAllClick}
-                    onRequestSort={handleRequestSort}
-                    rowCount={rows.length}
-                  />
-                    <TableBody>
-                    {/* <Link to={`/master/jenis-beasiswa/${beajenis.bea_jenis_kode}`}> */}
-                    {(rowsPerPage > 0
-                    ? beawawancara.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    : beawawancara
-                    ).map((beawawancara,i) => {
-                      const isItemSelected = isSelected(beawawancara.bea_wawancara_id);
-                      const labelId = `enhanced-table-checkbox-${i}`;
-                      return (
-                        <TableRow
-                        hover
-                        onClick={(event) => handleClick(event, beawawancara.bea_wawancara_id)}
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={beawawancara.bea_wawancara_id}
-                        selected={isItemSelected}
-                        // sx={{ cursor: 'pointer' }}
-                        sx={{ cursor: 'pointer', '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                            {/* <TableCell component="th" scope="row">
-                                {i+1}
-                            </TableCell> */}
-                            {/* <TableCell padding="checkbox">
-                              <Checkbox
-                                color="primary"
-                                checked={isItemSelected}
-                                inputProps={{
-                                  'aria-labelledby': labelId,
-                                }}
-                              />
-                            </TableCell> */}
-                            <TableCell
-                              component="th"
-                              id={labelId}
-                              scope="row"
-                              padding="none"
-                              align='center'
-                            >
-                              {beawawancara && beawawancara.keu_beasiswa && beawawancara.keu_beasiswa.keu_bea_jeni && beawawancara.keu_beasiswa.keu_bea_jeni.bea_jenis_nama}
-                            </TableCell>
-                            {/* <TableCell align="left" name="kodeJenis">{beajenis.bea_jenis_kode}</TableCell> */}
-                            {/* <TableCell align='left'> */}
-                                {/* <h1 className="has-text-weight-bold">{beajenis.bea_jenis_nama} </h1>
-                                {beawawancara.mahasiswa.mhs_nama} */}
-                                {/* <span dangerouslySetInnerHTML={{__html: `${beawawancara.mhs_nrp}<br/>${beawawancara && beawawancara.mahasiswa && beawawancara.mahasiswa.mhs_nama}`}} /> */}
-                            {/* </TableCell> */}
-                            {/* <TableCell align="left">{beawawancara && beawawancara.keu_beasiswa && beawawancara.keu_beasiswa.keu_bea_jeni && beawawancara.keu_beasiswa.keu_bea_jeni.bea_jenis_nama}</TableCell> */}
-                            <TableCell align="center">
-                            <span dangerouslySetInnerHTML={{__html: `${formatDate(beawawancara.bea_apply_tanggal)}`}} />
-                            </TableCell>
-                            <TableCell align="center">
-                            {(() => {
-                            if (beawawancara.bea_apply_wawancara === "" || beawawancara.bea_apply_wawancara === null){
-                              return "Belum dijadwal"
-                            }
-                            return(
-                              <span dangerouslySetInnerHTML={{__html: `${convertAndFormatDate(beawawancara.bea_apply_wawancara, "Jakarta")}`}} />
-                            )
-                            })()}
-                            
-                            </TableCell>
-                            {/* <TableCell>
-                            <Button variant="contained" startIcon={<UpdateIcon/>} onClick={handleClick}>
-                                Update
-                            </Button> 
-                            <Link to={`/master/wawancara/${beawawancara.bea_wawancara_id}`}>
-                            <IconButton aria-label="update" color="secondary"
-                            // onClick={() => handleUpdateClick(kodeJenis)}
-                            > 
-                                <ModeEditIcon />
-                            </IconButton>
-                            </Link>
-                            <IconButton aria-label="delete" sx={{ color: "red" }}
-                            onClick={() => handleClickOpen()}
-                            >
-                                <DeleteIcon />
-                            </IconButton>
-                            <Dialog
-                              open={open}
-                              onClose={handleClose}
-                              aria-labelledby="alert-dialog-title"
-                              aria-describedby="alert-dialog-description"
-                            >
-                              <DialogTitle id="alert-dialog-title">
-                                {"Are you sure to delete this item?"}
-                              </DialogTitle>
-                              <DialogContent>
-                                <DialogContentText id="alert-dialog-description">
-                                  If this item was deleted, you can't resolve again
-                                </DialogContentText>
-                              </DialogContent>
-                              <DialogActions>
-                                <Button onClick={handleClose}>Disagree</Button>
-                                <Button onClick={() => handleDeleteClick({i})} autoFocus>
-                                  {/* alert(i);
-                                  Agree
-                                </Button>
-                              </DialogActions>
-                            </Dialog>
-                            </TableCell> */}
-                        </TableRow>
 
-                          )})}
-                    {/* </Link> */}
-                    {emptyRows > 0 && (
-                        <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={6} />
-                        </TableRow>
-                    )}
-                    </TableBody>
-                    <TableFooter>
-                        <TableRow>
-                            <TablePagination
-                            rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                            colSpan={12}
-                            count={beawawancara.length}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            SelectProps={{
-                                inputProps: {
-                                'aria-label': 'rows per page',
-                                },
-                                native: true,
-                            }}
-                            onPageChange={handleChangePage}
-                            onRowsPerPageChange={handleChangeRowsPerPage}
-                            ActionsComponent={TablePaginationActions}
-                            />
-                        </TableRow>
-                    </TableFooter>
-                </Table>
-            </TableContainer>
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            <DataTable value={beawawancara} paginator rows={10} rowsPerPageOptions={[5, 10, 20]} globalFilterFields={['keu_bea_jeni.bea_jenis_nama', 'aka_periode.periode_nama', 'beasiswa_stop', 'aka_periode.periode_akademik', 'beasiswa_start', 'beasiswa_sk']} filterDisplay="row" emptyMessage="No data found.">
+              <Column field="keu_beasiswa.keu_bea_jeni.bea_jenis_nama" sortable header="Jenis Beasiswa" filter />
+              <Column
+                field="bea_apply_tanggal"
+                header="Tanggal Apply"
+                sortable
+                filter
+              />
+              <Column
+                field="bea_apply_wawancara"
+                header="Jadwal Wawancara"
+                sortable
+                filter
+              />
+              {/* Add more columns as needed */}
+            </DataTable>
+          )}
         </>
     )
 }

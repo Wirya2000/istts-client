@@ -44,6 +44,7 @@ export default function DashboardLayout() {
 
       <Main>
         <Outlet />
+        <Footer />
       </Main>
 
       {/* <Footer onOpenNav={() => setOpen(true)} /> */}

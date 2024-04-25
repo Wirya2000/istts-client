@@ -58,6 +58,9 @@ import { visuallyHidden } from '@mui/utils';
 
 // import tokenValidator from '../utils/tokenValidator';
 
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+
 
 function descendingComparator(a, b, orderBy) {
   if (a[orderBy] === null) {
@@ -343,6 +346,8 @@ export default function MasterJenisBeasiswa({kodeJenis}) {
     const [rows, setRows] = useState(beapengumuman);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+    const [loading, setLoading] = useState(true);
+
     const [delindex, setDelindex] = React.useState();
 
     const handleRequestSort = (event, property) => {
@@ -501,6 +506,18 @@ export default function MasterJenisBeasiswa({kodeJenis}) {
     
     const navigate = useNavigate();
 
+    const header = (
+      <div className="table-header">
+        <h2>Scholarships</h2>
+        {/* <InputText
+          type="search"
+          placeholder="Global Search"
+          value={globalFilter}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+        /> */}
+      </div>
+    );
+
     return (
         <>
         <Helmet>
@@ -540,6 +557,86 @@ export default function MasterJenisBeasiswa({kodeJenis}) {
         })()}
             
         </Container>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          (userData.role === "admin" || userData.role === "pmb") ? (
+            <DataTable value={beapengumuman} paginator rows={10} rowsPerPageOptions={[5, 10, 20]} globalFilterFields={['keu_bea_jeni.bea_jenis_nama', 'aka_periode.periode_nama', 'beasiswa_stop', 'aka_periode.periode_akademik', 'beasiswa_start', 'beasiswa_sk']} filterDisplay="row" emptyMessage="No data found." header={header}>
+              <Column bodyStyle={{ textAlign: 'center'}} field="beapengumuman.pengumuman_judul" sortable header="Judul Pengumuman" filter />
+              <Column
+                field="periode"
+                header="Period Name & Academic Period"
+                // body={concatPeriod}
+                sortable
+                sortField="aka_periode.periode_nama" // Specify the sortField to enable sorting
+                sortableCustom
+                filter
+              />
+              <Column
+                field="beasiswa_start"
+                header="Start & End Dates"
+                // body={concatDates}
+                sortable
+                sortField="beasiswa_start" // Specify the sortField to enable sorting
+                sortableCustom
+                filter
+              />
+              <Column field="beasiswa_sk" sortable header="Email" filter />
+              {/* Add more columns as needed */}
+            </DataTable>
+          ) : (
+            <DataTable value={beapengumuman} paginator rows={10} rowsPerPageOptions={[5, 10, 20]} globalFilterFields={['keu_bea_jeni.bea_jenis_nama', 'aka_periode.periode_nama', 'beasiswa_stop', 'aka_periode.periode_akademik', 'beasiswa_start', 'beasiswa_sk']} filterDisplay="row" emptyMessage="No data found." header={header}>
+              <Column bodyStyle={{ textAlign: 'center'}} field="beapengumuman.pengumuman_judul" sortable header="Judul Pengumuman" filter />
+              <Column
+                field="periode"
+                header="Period Name & Academic Period"
+                // body={concatPeriod}
+                sortable
+                sortField="aka_periode.periode_nama" // Specify the sortField to enable sorting
+                sortableCustom
+                filter
+              />
+              <Column
+                field="beasiswa_start"
+                header="Start & End Dates"
+                // body={concatDates}
+                sortable
+                sortField="beasiswa_start" // Specify the sortField to enable sorting
+                sortableCustom
+                filter
+              />
+              <Column field="beasiswa_sk" sortable header="Email" filter />
+              {/* Add more columns as needed */}
+            </DataTable>
+          )
+        )}
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <DataTable value={beapengumuman} paginator rows={10} rowsPerPageOptions={[5, 10, 20]} globalFilterFields={['keu_bea_jeni.bea_jenis_nama', 'aka_periode.periode_nama', 'beasiswa_stop', 'aka_periode.periode_akademik', 'beasiswa_start', 'beasiswa_sk']} filterDisplay="row" emptyMessage="No data found." header={header}>
+            <Column bodyStyle={{ textAlign: 'center'}} field="beapengumuman.pengumuman_judul" sortable header="Judul Pengumuman" filter />
+            <Column
+              field="periode"
+              header="Period Name & Academic Period"
+              // body={concatPeriod}
+              sortable
+              sortField="aka_periode.periode_nama" // Specify the sortField to enable sorting
+              sortableCustom
+              filter
+            />
+            <Column
+              field="beasiswa_start"
+              header="Start & End Dates"
+              // body={concatDates}
+              sortable
+              sortField="beasiswa_start" // Specify the sortField to enable sorting
+              sortableCustom
+              filter
+            />
+            <Column field="beasiswa_sk" sortable header="Email" filter />
+            {/* Add more columns as needed */}
+          </DataTable>
+        )}
           <TableContainer component={Paper}>
               {/* <SearchBar
                 value={searched}
