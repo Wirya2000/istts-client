@@ -461,8 +461,9 @@ export default function MasterBeasiswa({ kodeBeasiswa }) {
 
   const handleRowClick = (rowData) => {
     // Redirect to another page with the selected data
-    alert("");
-    navigate(`/master/beasiswa/mhs/${rowData.beasiswa_kode}`); // Navigate to '/details/:beasiswa_kode'
+    console.log("halo");
+    console.log(rowData);
+    navigate(`/master/beasiswa/mhs/${rowData.data.beasiswa_kode}`); // Navigate to '/details/:beasiswa_kode'
   };
 
   const header = (

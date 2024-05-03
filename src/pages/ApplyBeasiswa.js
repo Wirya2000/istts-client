@@ -42,7 +42,7 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
 import { useTheme } from '@mui/material/styles';
-import { forEach } from 'lodash';
+import { forEach, values } from 'lodash';
 import tokenValidator from '../utils/tokenValidator';
 
 
@@ -81,7 +81,7 @@ export default function ApplyBeasiswa() {
   //   bea_jenis_kode: ""
   // });
   const [beasiswa, setBeasiswa] = useState([]);
-  const [value, setValue] = useState(0);
+  const [valueProgressBar, setValueProgressBar] = useState([]);
   const toast = useRef(null);
   const interval = useRef(null);
   
@@ -89,34 +89,67 @@ export default function ApplyBeasiswa() {
 
   const [alertMessage, setAlertMessage] = useState({severity: '', message: ''});
 
-  const handleUploadProgress = () => {
-    let _val = value;
+  const handleUploadProgress = async (itemId) => {
+    // let _valueProgressBar = valueProgressBar;
+    // let _val = 0;
+    // interval.current = setInterval(() => {
+    //     _val += Math.floor(Math.random() * 10) + 1;
 
-    interval.current = setInterval(() => {
-        _val += Math.floor(Math.random() * 10) + 1;
+    //     if (_val >= 100) {
+    //         _val = 100;
+    //         toast.current.show({ severity: 'info', summary: 'Success', detail: 'Process Completed' });
+    //         clearInterval(interval.current);
+    //     }
 
-        if (_val >= 100) {
-            _val = 100;
-            toast.current.show({ severity: 'info', summary: 'Success', detail: 'Process Completed' });
-            clearInterval(interval.current);
-        }
+    //     _valueProgressBar[itemId] = _val;
+    //     setValueProgressBar(_valueProgressBar);
+    // }, 2000);
 
-        setValue(_val);
-    }, 2000);
+    // return () => {
+    //     if (interval.current) {
+    //         clearInterval(interval.current);
+    //         interval.current = null;
+    //     }
+    // };
 
-    return () => {
-        if (interval.current) {
-            clearInterval(interval.current);
-            interval.current = null;
-        }
-    };
+
+
+
+    // setValueProgressBar((prevProgressBars) =>
+    //   prevProgressBars.map((bar) => {
+    //     let newValue = value.value + Math.floor(Math.random() * 10) + 1;
+          
+    //     if (newValue >= 100) {
+    //       newValue = 100;
+    //       toast.current.show({ severity: 'info', summary: 'Success', detail: 'Process Completed' });
+    //     }
+    //     bar.id === itemId ? { ...bar, value: newValue } : bar;
+    //   })
+    // );
+
+
+
+
+    const updatedValueProgressBar = valueProgressBar.map((bar) => {
+      if (bar.id === itemId) {
+            // Simulate progress increase
+          let newValue = bar.value + Math.floor(Math.random() * 10) + 1;
+          if (newValue >= 100) {
+              newValue = 100;
+              toast.current.show({ severity: 'info', summary: 'Success', detail: 'Process Completed' });
+          }
+          return { ...bar, value: newValue };
+      }
+      return bar;
+    });
+    setValueProgressBar(updatedValueProgressBar);
   }
 
   const handleFileChange = (itemId, namaFile, tipeFile, event) => {
     const selectedFile = event.target.files[0];
     console.log(selectedFile);
     const token = Cookies.get('myToken');
-    handleUploadProgress();
+    handleUploadProgress(itemId);
     console.log(`${process.env.REACT_APP_BACKEND_URL}/beaapply/upload/${itemId}/${beasiswaKode}`)
     axios.post(`${process.env.REACT_APP_BACKEND_URL}/beaapply/upload/${itemId}/${beasiswaKode}`, {
       bea_syarat_file_nama: namaFile,
@@ -376,6 +409,35 @@ export default function ApplyBeasiswa() {
     getLinkSyaratMhs();
   },[]);
 
+  // useEffect(() => {
+  //   for (let i = 0; i < beasyarat.length; i+=1) {
+  //     for (let j = 0; j < newbeajenissyaratArr.length; j+=1) {
+  //       if(beasyarat[i].bea_syarat_id === newbeajenissyaratArr[j]){
+  //         valueProgressBar.push({
+  //           'id': beasyarat[i].bea_syarat_id,
+  //           'value': 0,
+  //         });
+  //       }
+  //     }
+  //   }
+  //   return () => {
+
+  //   };
+  // }, []);
+
+  const getProgressBarValue = async() => {
+    for (let i = 0; i < beasyarat.length; i+=1) {
+      for (let j = 0; j < newbeajenissyaratArr.length; j+=1) {
+        if(beasyarat[i].bea_syarat_id === newbeajenissyaratArr[j]){
+          valueProgressBar.push({
+            'id': beasyarat[i].bea_syarat_id,
+            'value': 0,
+          });
+        }
+      }
+    }
+  }
+
   console.log(beasiswa);
   
   const syaratArr = [];
@@ -389,11 +451,11 @@ export default function ApplyBeasiswa() {
   for (let i = 0; i < beasyarat.length; i+=1) {
     for (let j = 0; j < newbeajenissyaratArr.length; j+=1) {
       if(beasyarat[i].bea_syarat_id === newbeajenissyaratArr[j]){
-        syaratArr.push({'id': beasyarat[i].bea_syarat_id, 'nama': beasyarat[i].bea_syarat_nama, 'namafile': beasyarat[i].bea_syarat_file_nama, 'tipefile': beasyarat[i].bea_syarat_file_tipe})
+        syaratArr.push({'id': beasyarat[i].bea_syarat_id, 'nama': beasyarat[i].bea_syarat_nama, 'namafile': beasyarat[i].bea_syarat_file_nama, 'tipefile': beasyarat[i].bea_syarat_file_tipe});
       }
     }
-    
   }
+  getProgressBarValue();
 
   console.log(syaratArr);
 
@@ -607,12 +669,13 @@ export default function ApplyBeasiswa() {
                           onChange={(event) => handleFilePreview(item.id, item.namafile, item.tipefile, event)}
                         />
                       </Button>
-                      {value && (
+                      
+                      {valueProgressBar[item.id] && (
                         <div className="card">
                           <Toast ref={toast} /> 
-                          <ProgressBar value={value} /> 
+                          <ProgressBar value={valueProgressBar[item.id]?.value} /> 
                         </div>
-                      )}
+                       )} 
                       
                       {(() => {
                         const matchingLs = lsyarat.find(ls => ls.bea_syarat_id === item.id);
